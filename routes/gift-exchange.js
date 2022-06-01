@@ -1,25 +1,23 @@
 const express = require("express")
+const GiftExchange = require("../models/gift-exchange")
 const router = express.Router()
 
-const giftExchange = {
-    gift1: 0,
-    gift2: 0,
-}
-
-router.get("/", async (req, res, next) => {
-    res.status(200).json(giftExchange)
-})
-
-router.post("/:giftName", async (req, res, next) => {
-    console.log(req.params)
-
-    const giftName = req.params.giftName
-
-    if(giftExchange[giftName] || giftExchange[giftName] === 0){
-        giftExchange[giftName]++
+router.post("/pairs", async (req, res, next) => {
+    try {
+      const result = await GiftExchange.pairs(req.body.names)
+      res.status(200).json({ result })
+    } catch (err) {
+      next(err)
     }
-
-    res.status(200).json(giftExchange)
-})
+  })
+  
+  router.post("/traditional", async (req, res, next) => {
+    try {
+      const result = await GiftExchange.traditional(req.body.names)
+      res.status(200).json({ result })
+    } catch (err) {
+      next(err)
+    }
+  })
 
 module.exports = router
